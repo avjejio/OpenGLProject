@@ -161,8 +161,8 @@
   <ItemGroup>
     <ClCompile Include="source\Application.cpp" />
     <ClCompile Include="source\Buffer.cpp" />
-    <ClCompile Include="source\GLProgram.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
+    <ClCompile Include="source\Shader.cpp" />
     <ClCompile Include="source\VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,8 +172,8 @@
   <ItemGroup>
     <ClInclude Include="source\Buffer.h" />
     <ClInclude Include="source\BufferLayout.h" />
-    <ClInclude Include="source\GLProgram.h" />
     <ClInclude Include="source\Renderer.h" />
+    <ClInclude Include="source\Shader.h" />
     <ClInclude Include="source\VertexArray.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

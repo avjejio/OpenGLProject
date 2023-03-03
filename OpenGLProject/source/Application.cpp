@@ -5,7 +5,7 @@
 
 #include "VertexArray.h"
 #include "Buffer.h"
-#include "GLProgram.h"
+#include "Shader.h"
 
 
 // Callbacks //
@@ -98,8 +98,8 @@ int main(void)
         Buffer indexBuffer(indices, sizeof(indices), GL_ELEMENT_ARRAY_BUFFER);
         indexBuffer.Unbind();
 
-        unsigned int program = GLProgram::CreateProgram("resources/shaders/vertexShader.glsl", "resources/shaders/fragmentShader.glsl");
-
+        Shader shader("resources/shaders/vertexShader.glsl", "resources/shaders/fragmentShader.glsl");
+        shader.Unbind();
 
         float color = 0.0f;
         float increment = 0.02f;
@@ -113,16 +113,12 @@ int main(void)
 
             vertexArray.Bind();
             indexBuffer.Bind();
-            GLCall(glUseProgram(program));
+            shader.Bind();
 
 
-            int u_ColorLocation = glGetUniformLocation(program, "u_Color");
-            if (u_ColorLocation == -1) {
-                ASSERT(false);
-            }
             changeColor(color, increment);
+            shader.SetUniform4f("u_Color", 1.0f, 0.0f, color, 1.0f);
 
-            GLCall(glUniform4f(u_ColorLocation, 1.0f, 0.0f, color, 1.0f));
 
             GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
@@ -132,8 +128,6 @@ int main(void)
             /* Poll for and process events */
             glfwPollEvents();
         }
-
-        glDeleteProgram(program);
     }
 
     glfwTerminate();
