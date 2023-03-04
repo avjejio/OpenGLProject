@@ -25,3 +25,14 @@ bool GLGetErrors(const char* file, int line) {
     }
     return isOk;
 }
+
+void Renderer::Draw(const VertexArray& vertexArray, const Buffer& indexBuffer, const Shader& shader) const {
+    vertexArray.Bind();
+    indexBuffer.Bind();
+    shader.Bind();
+    GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+}
+
+void Renderer::Clear() const {
+    GLCall(glClear(GL_COLOR_BUFFER_BIT));
+}

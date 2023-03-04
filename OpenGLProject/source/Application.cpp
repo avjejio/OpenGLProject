@@ -6,6 +6,7 @@
 #include "VertexArray.h"
 #include "Buffer.h"
 #include "Shader.h"
+#include "Texture.h"
 
 
 // Callbacks //
@@ -70,22 +71,25 @@ int main(void)
     {
         float positions[]
         {
-            -0.5f, -0.5f,
-            -0.5f,  0.5f,
-             0.5f, -0.5f,
-             0.5f,  0.5f
+            -0.5f, -0.5f, 0.0f, 0.0f,
+            -0.5f,  0.5f, 0.0f, 1.0f,
+             0.5f, -0.5f, 1.0f, 0.0f,
+             0.5f,  0.5f, 1.0f, 1.0f
         };
 
         unsigned int indices[]
         {
             0, 1, 2,
-            0, 2, 3
+            1, 2, 3
         };
 
-        
+        GLCall(glEnable(GL_BLEND));
+        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
         VertexArray vertexArray;
 
         BufferLayout layout;
+        layout.Push<float>(2, GL_FALSE);
         layout.Push<float>(2, GL_FALSE);
 
         Buffer vertexBuffer(positions, sizeof(positions), GL_ARRAY_BUFFER);
@@ -99,28 +103,27 @@ int main(void)
         indexBuffer.Unbind();
 
         Shader shader("resources/shaders/vertexShader.glsl", "resources/shaders/fragmentShader.glsl");
-        shader.Unbind();
 
         float color = 0.0f;
         float increment = 0.02f;
 
+        Texture texture("resources/textures/Image.png");
+        texture.Bind();
+        shader.SetUniform1i("u_Texture", 0);
+
+        Renderer renderer;
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
-            GLCall(glClear(GL_COLOR_BUFFER_BIT));
+            renderer.Clear();
 
-            vertexArray.Bind();
-            indexBuffer.Bind();
-            shader.Bind();
+            renderer.Draw(vertexArray, indexBuffer, shader);
 
-
-            changeColor(color, increment);
             shader.SetUniform4f("u_Color", 1.0f, 0.0f, color, 1.0f);
+            changeColor(color, increment);
 
-
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
